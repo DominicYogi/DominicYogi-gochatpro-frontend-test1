@@ -121,19 +121,23 @@
 
   // ========== Chat Toggle ==========
   chatBtn.addEventListener("click", () => {
-    const isHidden = chatWindow.classList.contains("hidden");
-    chatWindow.classList.toggle("hidden");
+  const isNowOpening = chatWindow.classList.contains("hidden");
 
-    openIcon.style.display = isHidden ? "none" : "inline";
-    exitIcon.style.display = isHidden ? "inline" : "none";
+  // Toggle first
+  chatWindow.classList.toggle("hidden");
 
-    const greeted = sessionStorage.getItem("greeted") === "true";
-    if (!isHidden && !userHasChatted && !greeted) {
-      appendMessage("bot", "👋 Hello! How can I help you today?");
-      sessionStorage.setItem("greeted", "true");
-      userHasChatted = true;
-    }
-  });
+  // Update icons
+  openIcon.style.display = isNowOpening ? "none" : "inline";
+  exitIcon.style.display = isNowOpening ? "inline" : "none";
+
+  // Send greeting ONLY the first time it's opened
+  const greeted = sessionStorage.getItem("greeted") === "true";
+  if (isNowOpening && !userHasChatted && !greeted) {
+    appendMessage("bot", "👋 Hello! How can I help you today?");
+    sessionStorage.setItem("greeted", "true");
+    userHasChatted = true;
+  }
+});
 
   // ========== Input Handlers ==========
   document.getElementById("send-button").addEventListener("click", sendMessage);
