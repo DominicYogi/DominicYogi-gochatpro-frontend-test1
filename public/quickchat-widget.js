@@ -13,7 +13,7 @@
       bottom: 20px;
       right: 20px;
       font-family: Arial, sans-serif;
-      z-index: 9999;
+      z-index: 999999 !important;
     }
     #chat-button {
       display: inline-block;
