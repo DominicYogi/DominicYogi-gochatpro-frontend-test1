@@ -7,75 +7,87 @@
 
   // ========== Inject Styles ==========
   const style = document.createElement("style");
-  style.textContent = `
-    #quickchatpro-widget {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      font-family: Arial, sans-serif;
-      z-index: 9999;
-    }
-    #chat-button {
-      display: inline-block;
-      padding: 14px;
-      border-radius: 50%;
-      cursor: pointer;
-      color: black;
-      width: auto;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-    }
-    #chat-button:hover {
-      background: rgba(0, 123, 255, 0.8);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-    }
-    #exit { display: none; }
-    #chat-window {
-      width: 300px;
-      height: 400px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-      margin-top: 10px;
-    }
-    .hidden { display: none !important; }
-    #chat-header {
-      background: #007bff;
-      color: white;
-      padding: 12px;
-      font-weight: bold;
-      text-align: center;
-    }
-    #chat-messages {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      font-size: 14px;
-    }
-    #chat-input-area {
-      display: flex;
-      border-top: 1px solid #ccc;
-    }
-    #chat-input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-    }
-    #send-button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-    }
-    .user-message { text-align: right; margin: 4px 0; }
-    .bot-message { text-align: left; margin: 4px 0; color: #555; }
+  style.textContent = `   
+#quickchatpro-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+}
+
+#chat-button {
+  display: inline-block;
+  padding: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: black; /* icon color */
+  width: auto;
+  background: rgba(255, 255, 255, 0.6); /* semi-transparent white */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+#chat-button:hover {
+  background: rgba(0, 123, 255, 0.8); /* darker on hover */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+#exit{
+  display: none;
+}
+
+#chat-window {
+  width: 300px;
+  height: 400px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#chat-header {
+  background: #007bff;
+  color: white;
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#chat-messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+#chat-input-area {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+#chat-input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+}
+
+#send-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
   `;
   document.head.appendChild(style);
 
@@ -83,24 +95,25 @@
   const container = document.createElement("div");
   container.innerHTML = `
     <div id="quickchatpro-widget">
-      <div id="chat-button">
-        <i class="fa-regular fa-comment-dots" id="open"></i>
-        <i class="fa-regular fa-circle-xmark" id="exit"></i>
-      </div>
-      <div id="chat-window" class="hidden">
-        <div id="chat-header">QuickChatPro</div>
-        <div id="chat-messages"></div>
-        <div id="chat-input-area">
-          <input type="text" id="chat-input" placeholder="Type a message..." />
-          <button id="send-button"><i class="fa-regular fa-paper-plane"></i></button>
-        </div>
+    <div id="chat-button">
+      <i class="fa-regular fa-comment-dots" id="open"></i>
+      <i class="fa-regular fa-circle-xmark" id="exit"></i>
+    </div>
+    <div id="chat-window" class="hidden">
+      <div id="chat-header">QuickChatPro</div>
+      <div id="chat-messages"></div>
+      <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Type a message..." />
+        <button id="send-button">
+          <i class="fa-regular fa-paper-plane"></i>
+        </button>
       </div>
     </div>
+  </div>
   `;
   document.body.appendChild(container);
 
-  // ========== Setup ==========
- // ========== Setup ==========
+// ========== Setup ==========
 const chatBtn = document.getElementById("chat-button");
 const chatWindow = document.getElementById("chat-window");
 const openIcon = document.getElementById("open");
@@ -234,4 +247,3 @@ async function sendMessage() {
   isSending = false;
 }
 })();
-
