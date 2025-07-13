@@ -220,11 +220,11 @@ async function sendMessage() {
 
   try {
     // 3. Call your backend
-   const res = await fetch("https://quickchatpro-backend-test1.onrender.com/chat", {
+   const response = await fetch("https://quickchatpro-backend-test1.onrender.com/chat", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "x-api-key": "${apiKey}"
+    "x-api-key": apiKey
   },
   body: JSON.stringify({
     message,
