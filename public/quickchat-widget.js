@@ -121,8 +121,8 @@ const exitIcon = document.getElementById("exit");
 const input = document.getElementById("chat-input");
 const messages = document.getElementById("chat-messages");
 
-const scriptTag = document.currentScript || document.querySelector('script[data-business]');
-const businessId = scriptTag?.getAttribute("data-business") || "default";
+const scriptTag = document.currentScript || document.querySelector('script[data-apikey]');
+const apiKey = scriptTag?.getAttribute("data-apikey") || "";
 
 // Flags
 let userHasChatted = false;
