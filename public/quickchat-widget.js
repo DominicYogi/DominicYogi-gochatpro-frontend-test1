@@ -121,7 +121,8 @@ const exitIcon = document.getElementById("exit");
 const input = document.getElementById("chat-input");
 const messages = document.getElementById("chat-messages");
 
-const scriptTag = document.currentScript || document.querySelector('script[data-apikey]');
+const scriptTags = document.querySelectorAll('script[data-apikey]');
+const scriptTag = scriptTags[scriptTags.length - 1];
 const apiKey = scriptTag?.getAttribute("data-apikey") || "";
 
 // Flags
