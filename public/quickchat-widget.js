@@ -114,6 +114,7 @@
   document.body.appendChild(container);
 
 // ========== Setup ==========
+// ========== Setup ==========
 const chatBtn = document.getElementById("chat-button");
 const chatWindow = document.getElementById("chat-window");
 const openIcon = document.getElementById("open");
@@ -121,9 +122,8 @@ const exitIcon = document.getElementById("exit");
 const input = document.getElementById("chat-input");
 const messages = document.getElementById("chat-messages");
 
-const scriptTags = document.querySelectorAll('script[data-apikey]');
-const scriptTag = scriptTags[scriptTags.length - 1];
-const apiKey = scriptTag?.getAttribute("data-apikey") || "";
+const scriptTag = document.currentScript || document.querySelector('script[data-business]');
+const businessId = scriptTag?.getAttribute("data-business") || "default";
 
 // Flags
 let userHasChatted = false;
@@ -147,7 +147,7 @@ if (wasOpen) {
 // Restore chat history
 const history = JSON.parse(sessionStorage.getItem("chat_history") || "[]");
 if (messages.children.length === 0 && history.length > 0) {
-  history.forEach(({ type, text }) => renderMessage(type, text)); // ⬅️ only render, don’t re-save
+  history.forEach(({ type, text }) => renderMessage(type, text));
   userHasChatted = true;
 }
 
@@ -156,13 +156,11 @@ chatBtn.addEventListener("click", () => {
   const isNowOpening = chatWindow.classList.contains("hidden");
   chatWindow.classList.toggle("hidden");
 
-  // Save open/close state
   sessionStorage.setItem("chat_open", isNowOpening ? "true" : "false");
 
   openIcon.style.display = isNowOpening ? "none" : "inline";
   exitIcon.style.display = isNowOpening ? "inline" : "none";
 
-  // Greet only once per session
   const greeted = sessionStorage.getItem("greeted") === "true";
   if (isNowOpening && !userHasChatted && !greeted) {
     appendMessage("bot", "👋 Hello! How can I help you today?");
@@ -188,7 +186,6 @@ function renderMessage(sender, text) {
 
 function appendMessage(sender, text) {
   renderMessage(sender, text);
-
   const history = JSON.parse(sessionStorage.getItem("chat_history") || "[]");
   history.push({ type: sender, text });
   sessionStorage.setItem("chat_history", JSON.stringify(history));
@@ -212,33 +209,27 @@ async function sendMessage() {
 
   userHasChatted = true;
 
-  // 1. Show user message (and save)
   appendMessage("user", message);
   input.value = "";
 
-  // 2. Show "Typing..." temporarily (DO NOT SAVE)
   renderMessage("bot", "Typing...");
 
   try {
-    // 3. Call your backend
-   const response = await fetch("https://quickchatpro-backend-test1.onrender.com/chat", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "x-api-key": apiKey
-  },
-  body: JSON.stringify({
-    message,
-    sessionId
-  })
-});
+    const response = await fetch("https://quickchatpro-backend-test1.onrender.com/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message,
+        sessionId,
+        business: businessId
+      })
+    });
 
     const data = await response.json();
-
-    // 4. Replace "Typing..." with real reply (and save)
     updateLastBotMessage(data.reply || "No response from bot.");
-    
-    // Save final reply to history
+
     const history = JSON.parse(sessionStorage.getItem("chat_history") || "[]");
     history.push({ type: "bot", text: data.reply || "No response from bot." });
     sessionStorage.setItem("chat_history", JSON.stringify(history));
