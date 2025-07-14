@@ -123,7 +123,7 @@ const input = document.getElementById("chat-input");
 const messages = document.getElementById("chat-messages");
 
 const scriptTag = document.currentScript || document.querySelector('script[data-business]');
-const businessId = scriptTag?.getAttribute("data-business") || "default";
+const businessId = scriptTag?.getAttribute("email") || "default";
 
 // Flags
 let userHasChatted = false;
