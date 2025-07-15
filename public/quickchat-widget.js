@@ -7,7 +7,7 @@
 
   // ========== Inject Styles ==========
   const style = document.createElement("style");
-  style.textContent = `   
+  style.textContent = ` 
 #quickchatpro-widget {
   position: fixed;
   bottom: 20px;
@@ -88,6 +88,77 @@
   padding: 10px;
   cursor: pointer;
 }
+
+
+/* Message bubble for the user (right-aligned) */
+.user-message {
+  text-align: right;
+  font-weight: 400;
+  padding: 10px;
+  border: 0.5px solid rgb(207, 205, 205);
+  border-radius: 15px;
+  background-color: rgb(231, 231, 231);
+}
+
+/* Message bubble for the bot (left-aligned) */
+.bot-message {
+  text-align: left;
+  padding: 7px;
+}
+
+/* Optional: Style for the chat widget */
+#chat-widget {
+  width: 300px;
+  height: 400px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+#chat-widget .chat-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-weight: bold;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+#chat-widget .chat-footer {
+  display: flex;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#chat-widget .chat-footer input {
+  width: 80%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+#chat-widget .chat-footer button {
+  padding: 8px;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#chat-widget .chat-footer button:hover {
+  background-color: #0056b3;
+}
   `;
   document.head.appendChild(style);
 
@@ -113,7 +184,6 @@
   `;
   document.body.appendChild(container);
 
-// ========== Setup ==========
 // ========== Setup ==========
 const chatBtn = document.getElementById("chat-button");
 const chatWindow = document.getElementById("chat-window");
