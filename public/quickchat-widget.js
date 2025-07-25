@@ -5,25 +5,51 @@
   faScript.crossOrigin = "anonymous";
   document.head.appendChild(faScript);
 
+  // Inject Google Fonts and preconnect links
+const fontLinks = [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "anonymous" },
+  { 
+    rel: "stylesheet",
+    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+  }
+];
+
+fontLinks.forEach(linkInfo => {
+  const link = document.createElement("link");
+  link.rel = linkInfo.rel;
+  link.href = linkInfo.href;
+  if (linkInfo.crossorigin) link.crossOrigin = linkInfo.crossorigin;
+  document.head.appendChild(link);
+});
+
+
   // ========== Inject Styles ==========
   const style = document.createElement("style");
-  style.textContent = ` 
+  style.textContent = `/* Root Styles */
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: #f1f5f9;
+}
+
+/* Widget Container */
 #quickchatpro-widget {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
   z-index: 9999;
 }
 
+/* Chat Toggle Button */
 #chat-button {
   display: inline-block;
   padding: 14px;
   border-radius: 50%;
   cursor: pointer;
-  color: black; /* icon color */
-  width: auto;
-  background: rgba(255, 255, 255, 0.6); /* semi-transparent white */
+  color: black;
+  background: rgba(255, 255, 255, 0.6);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -32,22 +58,24 @@
 }
 
 #chat-button:hover {
-  background: rgba(0, 123, 255, 0.8); /* darker on hover */
+  background: rgba(0, 51, 102, 0.8);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-#exit{
+#exit {
   display: none;
 }
 
+/* Main Chat Window */
 #chat-window {
-  width: 300px;
-  height: 400px;
+  width: 350px;
+  max-height: 90vh;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   margin-top: 10px;
 }
 
@@ -55,110 +83,185 @@
   display: none !important;
 }
 
+/* Header */
 #chat-header {
-  background: #007bff;
+  background: #003366;
   color: white;
-  padding: 12px;
+  padding: 16px;
+  text-align: left;
   font-weight: bold;
-  text-align: center;
 }
 
+.chat-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.chat-status {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+/* Messages Area */
 #chat-messages {
   flex: 1;
-  padding: 10px;
+  padding: 16px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   font-size: 14px;
 }
 
+/* Message Bubbles */
+.message {
+  padding: 12px 16px;
+  border-radius: 18px;
+  max-width: 80%;
+  line-height: 1.4;
+  font-size: 14px;
+  position: relative;
+}
+
+.user {
+  align-self: flex-end;
+  background: #003366;
+  color: white;
+  border-bottom-right-radius: 4px;
+  font-family: "Inter", sans-serif;
+  padding: 18px 25px;
+  border-radius: 15px;
+}
+
+.bot {
+  align-self: flex-start;
+  background: #e5e5ea;
+  color: black;
+  border-bottom-left-radius: 4px;
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  padding: 18px 25px;
+  border-radius: 15px;
+}
+.human{
+  align-self: flex-start;
+  background: #afaff7;
+  color: black;
+  border-bottom-left-radius: 4px;
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  padding: 18px 25px;
+  border-radius: 15px;
+  font-style: italic;
+}
+
+.typing {
+  font-style: italic;
+  color: #888;
+  padding-left: 8px;
+}
+
+.chat-msg.bot.typing {
+  font-style: italic;
+  color: #888;
+}
+
+/* Input Area */
 #chat-input-area {
   display: flex;
-  border-top: 1px solid #ccc;
+  padding: 12px;
+  border-top: 1px solid #eee;
+  gap: 10px;
 }
 
 #chat-input {
   flex: 1;
-  padding: 10px;
-  border: none;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
 }
 
+/* Send Button */
 #send-button {
-  background: #007bff;
+  background: #003366;
   color: white;
   border: none;
-  padding: 10px;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
   cursor: pointer;
 }
 
-
-/* Message bubble for the user (right-aligned) */
-.user-message {
-  text-align: right;
-  font-weight: 400;
-  padding: 10px;
-  border: 0.5px solid rgb(207, 205, 205);
-  border-radius: 15px;
-  background-color: rgb(231, 231, 231);
+/* Upload Button */
+.upload-btn {
+  cursor: pointer;
+  font-size: 20px;
+  margin-right: 8px;
+  user-select: none;
 }
 
-/* Message bubble for the bot (left-aligned) */
-.bot-message {
-  text-align: left;
-  padding: 7px;
-}
-
-/* Optional: Style for the chat widget */
-#chat-widget {
-  width: 300px;
-  height: 400px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+/* Image & Video Preview */
+.chat-image-preview,
+.chat-video-preview {
+  max-width: 200px;
+  max-height: 200px;
   border-radius: 10px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 5px 0;
+}
+
+.chat-image-preview:hover {
+  opacity: 0.8;
+}
+
+.image-overlay {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
-#chat-widget .chat-header {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
-  text-align: center;
+.image-popup {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.image-popup img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.image-popup .close-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: white;
+  border-radius: 50%;
+  padding: 4px 10px;
   font-weight: bold;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-#chat-widget .chat-footer {
-  display: flex;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-#chat-widget .chat-footer input {
-  width: 80%;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-#chat-widget .chat-footer button {
-  padding: 8px;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  border: none;
   cursor: pointer;
 }
 
-#chat-widget .chat-footer button:hover {
-  background-color: #0056b3;
+.uploading {
+  font-size: 12px;
+  color: #888;
+  margin-left: 8px;
 }
+.chat-msg.sending {
+  opacity: 0.6;
+  font-style: italic;
+}
+
   `;
   document.head.appendChild(style);
 
@@ -170,15 +273,25 @@
       <i class="fa-regular fa-comment-dots" id="open"></i>
       <i class="fa-regular fa-circle-xmark" id="exit"></i>
     </div>
-    <div id="chat-window" class="hidden">
-      <div id="chat-header">QuickChatPro</div>
-      <div id="chat-messages"></div>
-      <div id="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Type a message..." />
-        <button id="send-button">
-          <i class="fa-regular fa-paper-plane"></i>
-        </button>
+
+    <div id="chat-window" class="chat-container hidden">
+      <div class="chat-header" id="chat-header">
+        <div class="chat-title">GoChatPro</div>
+        <div class="chat-status">We’re online</div>
       </div>
+
+      <div id="chat-messages" class="chat-box"></div>
+
+      <form id="chat-input-area">
+        <!--<label for="file-upload" class="upload-btn">
+          <i class="fa-solid fa-plus"></i>
+        </label>
+        <input type="file" id="file-upload" accept="image/*" style="display: none;" />-->
+        <input type="text" id="chat-input" placeholder="Type a message..." required />
+        <button id="send-button" type="submit">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
     </div>
   </div>
   `;
@@ -193,121 +306,222 @@ const input = document.getElementById("chat-input");
 const messages = document.getElementById("chat-messages");
 
 const scriptTag = document.currentScript || document.querySelector('script[email]');
-const businessId = scriptTag?.getAttribute("email") || "default";
+const business = scriptTag?.getAttribute("business") || "dominic@gmail.com";
 
-// Flags
+
 let userHasChatted = false;
 let isSending = false;
 
-const sessionId = sessionStorage.getItem("chat_session_id") || generateSessionId();
-sessionStorage.setItem("chat_session_id", sessionId);
+(async () => {
+  const chatBox = document.getElementById('chat-messages');
+  const chatForm = document.getElementById('chat-input-area');
+  const chatInput = document.getElementById('chat-input');
 
-function generateSessionId() {
-  return "sess_" + Math.random().toString(36).substr(2, 9);
-}
+  const renderedMessages = new Set();
+  const tempMessageMap = new Map();
 
-// Restore chat open/close state
-const wasOpen = sessionStorage.getItem("chat_open") === "true";
-if (wasOpen) {
-  chatWindow.classList.remove("hidden");
-  openIcon.style.display = "none";
-  exitIcon.style.display = "inline";
-}
+  async function loadChatTitle() {
 
-// Restore chat history
-const history = JSON.parse(sessionStorage.getItem("chat_history") || "[]");
-if (messages.children.length === 0 && history.length > 0) {
-  history.forEach(({ type, text }) => renderMessage(type, text));
-  userHasChatted = true;
-}
+  const res = await fetch(`https://quickchatpro-backend-test1-1.onrender.com/api/settings?business=${business}`);
+  const data = await res.json();
 
-// ========== Chat Toggle ==========
-chatBtn.addEventListener("click", () => {
-  const isNowOpening = chatWindow.classList.contains("hidden");
-  chatWindow.classList.toggle("hidden");
-
-  sessionStorage.setItem("chat_open", isNowOpening ? "true" : "false");
-
-  openIcon.style.display = isNowOpening ? "none" : "inline";
-  exitIcon.style.display = isNowOpening ? "inline" : "none";
-
-  const greeted = sessionStorage.getItem("greeted") === "true";
-  if (isNowOpening && !userHasChatted && !greeted) {
-    appendMessage("bot", "👋 Hello! How can I help you today?");
-    sessionStorage.setItem("greeted", "true");
-    userHasChatted = true;
+  if (data.chatTitle) {
+    document.querySelector(".chat-title").textContent = data.chatTitle;
   }
-});
-
-// ========== Input Handlers ==========
-document.getElementById("send-button").addEventListener("click", sendMessage);
-input.addEventListener("keypress", function (e) {
-  if (e.key === "Enter") sendMessage();
-});
-
-// ========== Message Functions ==========
-function renderMessage(sender, text) {
-  const msgBox = document.createElement("div");
-  msgBox.className = sender === "user" ? "user-message" : "bot-message";
-  msgBox.textContent = text;
-  messages.appendChild(msgBox);
-  messages.scrollTop = messages.scrollHeight;
 }
 
-function appendMessage(sender, text) {
-  renderMessage(sender, text);
-  const history = JSON.parse(sessionStorage.getItem("chat_history") || "[]");
-  history.push({ type: sender, text });
-  sessionStorage.setItem("chat_history", JSON.stringify(history));
+loadChatTitle();
+
+
+let sessionId = sessionStorage.getItem('sessionId');
+
+if (sessionId && business) {
+  const tabKey = `tabCount-${sessionId}`;
+  const currentCount = parseInt(localStorage.getItem(tabKey)) || 0;
+  localStorage.setItem(tabKey, currentCount + 1);
+
+  window.addEventListener("beforeunload", () => {
+    const remaining = (parseInt(localStorage.getItem(tabKey)) || 1) - 1;
+
+    if (remaining <= 0) {
+      localStorage.removeItem(tabKey);
+
+      // Send final beacon to mark session as closed
+      navigator.sendBeacon(
+  "https://quickchatpro-backend-test1-1.onrender.com/api/session/close",
+  new Blob(
+    [JSON.stringify({ sessionId, business })],
+    { type: 'application/json' }
+  )
+);
+
+    } else {
+      localStorage.setItem(tabKey, remaining);
+    }
+  });
 }
 
-function updateLastBotMessage(newText) {
-  const bots = document.querySelectorAll(".bot-message");
-  if (bots.length > 0) bots[bots.length - 1].textContent = newText;
-}
+  
+  function appendMessage(sender, text = '', _fileUrl = '', _fileType = '', _timestamp = '', msgId = '', isTemp = false) {
+    const contentKey = `${sender}-${text}`.trim();
 
-// ========== Main Chat Function ==========
-async function sendMessage() {
-  if (isSending) return;
-  isSending = true;
+    if (sender === 'user' && !isTemp && tempMessageMap.has(contentKey)) {
+      const tempEl = tempMessageMap.get(contentKey);
+      if (tempEl?.parentNode) tempEl.remove();
+      renderedMessages.delete(tempEl.getAttribute('data-msg-id'));
+      tempMessageMap.delete(contentKey);
+    }
 
-  const message = input.value.trim();
-  if (!message) {
-    isSending = false;
-    return;
+    const uniqueKey = msgId || `temp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    if (renderedMessages.has(uniqueKey)) return;
+
+    const div = document.createElement('div');
+    div.classList.add('chat-msg', sender);
+    div.setAttribute('data-msg-id', uniqueKey);
+    div.textContent = text;
+
+    chatBox.appendChild(div);
+    renderedMessages.add(uniqueKey);
+
+    if (isTemp && sender === 'user') {
+      tempMessageMap.set(contentKey, div);
+    }
+
+    const atBottom = chatBox.scrollHeight - chatBox.scrollTop <= chatBox.clientHeight + 50;
+    if (atBottom) chatBox.scrollTop = chatBox.scrollHeight;
   }
 
-  userHasChatted = true;
+  if (!chatBox || !chatForm || !chatInput) {
+    console.error('Essential chat DOM elements missing.');
+    throw new Error('Chat UI failed to load properly.');
+  }
 
-  appendMessage("user", message);
-  input.value = "";
+  chatBtn.addEventListener("click", () => {
+    const isNowOpening = chatWindow.classList.contains("hidden");
+    chatWindow.classList.toggle("hidden");
 
-  renderMessage("bot", "Typing...");
+    sessionStorage.setItem("chat_open", isNowOpening ? "true" : "false");
 
-  try {
-    const response = await fetch("https://quickchatpro-backend-test1.onrender.com/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message,
-        sessionId,
-        business: businessId
-      })
+    openIcon.style.display = isNowOpening ? "none" : "inline";
+    exitIcon.style.display = isNowOpening ? "inline" : "none";
+
+    const greeted = sessionStorage.getItem("greeted") === "true";
+    if (isNowOpening && !userHasChatted && !greeted) {
+      appendMessage("bot", "👋 Hello! How can I help you today?");
+      sessionStorage.setItem("greeted", "true");
+      userHasChatted = true;
+    }
+  });
+
+  
+
+  async function initSession() {
+    sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+    sessionStorage.setItem('sessionId', sessionId);
+
+    await fetch('https://quickchatpro-backend-test1-1.onrender.com/api/session/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId, business }),
     });
 
-    const data = await response.json();
-    updateLastBotMessage(data.reply || "No response from bot.");
-
-    const history = JSON.parse(sessionStorage.getItem("chat_history") || "[]");
-    history.push({ type: "bot", text: data.reply || "No response from bot." });
-    sessionStorage.setItem("chat_history", JSON.stringify(history));
-
-  } catch (error) {
-    updateLastBotMessage("❌ Error: Could not connect.");
+    console.log('✅ New session started:', sessionId);
   }
 
-  isSending = false;
+  async function loadMessages() {
+    try {
+      const res = await fetch(`https://quickchatpro-backend-test1-1.onrender.com/api/messages/${business}`);
+      const allMessages = await res.json();
+
+      const sessionMessages = allMessages
+        .filter(msg => msg.sessionId === sessionId)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      chatBox.innerHTML = '';
+
+      sessionMessages.forEach(msg =>
+        appendMessage(msg.sender, msg.text, '', '', msg.timestamp, msg._id)
+      );
+    } catch {
+      appendMessage('bot', '❌ Failed to load chat history.');
+    }
+  }
+
+  async function pollForNewMessages() {
+    try {
+      const res = await fetch(`https://quickchatpro-backend-test1-1.onrender.com/api/messages/${business}`);
+      const allMessages = await res.json();
+
+      const sessionMessages = allMessages
+        .filter(msg => msg.sessionId === sessionId)
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      const newMessages = sessionMessages.filter(msg => !renderedMessages.has(msg._id));
+if (newMessages.length) {
+  const typingMsg = document.getElementById('typing-indicator');
+  if (typingMsg) typingMsg.remove();
+
+  newMessages.forEach(msg => {
+    appendMessage(msg.sender, msg.text, '', '', msg.timestamp, msg._id, false);
+  });
 }
+
+    } catch (err) {
+      console.warn('Polling failed:', err);
+    }
+  }
+
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!sessionId) await initSession();
+
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    appendMessage('user', message, '', '', '', tempId, true);
+    chatInput.value = '';
+
+      const typingDiv = document.createElement('div');
+      typingDiv.classList.add('chat-msg', 'bot');
+      typingDiv.id = 'typing-indicator';
+      typingDiv.textContent = '🤖 Bot is typing...';
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+  await fetch('https://quickchatpro-backend-test1-1.onrender.com/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message, sessionId, business })
+  });
+
+  // Immediately poll for new messages after user sends
+  await pollForNewMessages();
+} catch {
+  appendMessage('bot', '❌ Failed to send message.');
+}
+
+  });
+
+  await loadMessages();
+  setInterval(pollForNewMessages, 3000);
+
+  window._renderedMessagesCount = document.querySelectorAll('.chat-msg').length;
+
+  window.addEventListener('pagehide', () => {
+    console.log('🔚 pagehide triggered — attempting to close session...');
+    if (!sessionId || !business) return;
+
+    console.log('📤 Sending session close to server...');
+    navigator.sendBeacon(
+      'https://quickchatpro-backend-test1-1.onrender.com/api/session/close',
+      new Blob(
+        [JSON.stringify({ sessionId, business })],
+        { type: 'application/json' }
+      )
+    );
+  });
+})();
+
 })();
