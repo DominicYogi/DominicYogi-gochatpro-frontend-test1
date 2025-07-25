@@ -435,7 +435,7 @@ if (sessionId && business) {
 
       const sessionMessages = allMessages
         .filter(msg => msg.sessionId === sessionId)
-        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        .sort((a, b) => a._id.localeCompare(b._id));
 
       chatBox.innerHTML = '';
 
@@ -454,7 +454,7 @@ if (sessionId && business) {
 
       const sessionMessages = allMessages
         .filter(msg => msg.sessionId === sessionId)
-        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        .sort((a, b) => a._id.localeCompare(b._id));
 
       const newMessages = sessionMessages.filter(msg => !renderedMessages.has(msg._id));
 if (newMessages.length) {
