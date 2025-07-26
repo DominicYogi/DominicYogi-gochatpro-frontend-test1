@@ -302,8 +302,6 @@ const chatBtn = document.getElementById("chat-button");
 const chatWindow = document.getElementById("chat-window");
 const openIcon = document.getElementById("open");
 const exitIcon = document.getElementById("exit");
-const input = document.getElementById("chat-input");
-const messages = document.getElementById("chat-messages");
 
 const scriptTag = document.currentScript || document.querySelector('script[email]');
 const business = scriptTag?.getAttribute("business") || "dominic@gmail.com";
@@ -311,6 +309,35 @@ const business = scriptTag?.getAttribute("business") || "dominic@gmail.com";
 
 let userHasChatted = false;
 let isSending = false;
+
+  const sessionId = sessionStorage.getItem("sessionId"); // sessionId must already be set
+  const tabChannel = new BroadcastChannel("tab-tracker-channel");
+  let isLastTab = true;
+
+  // Ping other tabs
+  tabChannel.postMessage({ type: "ping" });
+
+  tabChannel.onmessage = (event) => {
+    if (event.data.type === "ping") {
+      tabChannel.postMessage({ type: "pong" });
+    }
+    if (event.data.type === "pong") {
+      isLastTab = false; // There are other open tabs
+    }
+  };
+
+  window.addEventListener("beforeunload", () => {
+    if (!business || !sessionId) return;
+
+    // Close only on last tab
+    if (isLastTab) {
+      const payload = JSON.stringify({ sessionId, business });
+      navigator.sendBeacon(
+        "http://localhost:3000/session/close",
+        new Blob([payload], { type: "application/json" })
+      );
+    }
+  });
 
 (async () => {
   const chatBox = document.getElementById('chat-messages');
@@ -322,7 +349,7 @@ let isSending = false;
 
   async function loadChatTitle() {
 
-  const res = await fetch(`https://quickchatpro-backend-test1-1.onrender.com/api/settings?business=${business}`);
+  const res = await fetch(`http://localhost:3000/api/settings?business=${business}`);
   const data = await res.json();
 
   if (data.chatTitle) {
@@ -335,33 +362,7 @@ loadChatTitle();
 
 let sessionId = sessionStorage.getItem('sessionId');
 
-if (sessionId && business) {
-  const tabKey = `tabCount-${sessionId}`;
-  const currentCount = parseInt(localStorage.getItem(tabKey)) || 0;
-  localStorage.setItem(tabKey, currentCount + 1);
 
-  window.addEventListener("beforeunload", () => {
-    const remaining = (parseInt(localStorage.getItem(tabKey)) || 1) - 1;
-
-    if (remaining <= 0) {
-      localStorage.removeItem(tabKey);
-
-      // Send final beacon to mark session as closed
-      navigator.sendBeacon(
-  "https://quickchatpro-backend-test1-1.onrender.com/api/session/close",
-  new Blob(
-    [JSON.stringify({ sessionId, business })],
-    { type: 'application/json' }
-  )
-);
-
-    } else {
-      localStorage.setItem(tabKey, remaining);
-    }
-  });
-}
-
-  
   function appendMessage(sender, text = '', _fileUrl = '', _fileType = '', _timestamp = '', msgId = '', isTemp = false) {
     const contentKey = `${sender}-${text}`.trim();
 
@@ -419,7 +420,7 @@ if (sessionId && business) {
     sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     sessionStorage.setItem('sessionId', sessionId);
 
-    await fetch('https://quickchatpro-backend-test1-1.onrender.com/api/session/start', {
+    await fetch('http://localhost:3000/api/session/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sessionId, business }),
@@ -428,9 +429,37 @@ if (sessionId && business) {
     console.log('✅ New session started:', sessionId);
   }
 
+  let inactivityTimeout;
+
+function resetInactivityTimer() {
+  clearTimeout(inactivityTimeout);
+
+  inactivityTimeout = setTimeout(() => {
+    if (sessionId && business) {
+      console.log('🕒 No activity for 10 minutes. Auto-closing session.');
+      navigator.sendBeacon(
+        "http://localhost:3000/api/session/close",
+        new Blob(
+          [JSON.stringify({ sessionId, business })],
+          { type: 'application/json' }
+        )
+      );
+    }
+  }, 10 * 60 * 1000); // 10 minutes
+}
+
+// Reset inactivity timer on user activity
+['mousemove', 'keydown', 'scroll', 'click', 'touchstart'].forEach(event =>
+  window.addEventListener(event, resetInactivityTimer)
+);
+
+// Start timer when session is initialized
+resetInactivityTimer();
+
+
   async function loadMessages() {
     try {
-      const res = await fetch(`https://quickchatpro-backend-test1-1.onrender.com/api/messages/${business}`);
+      const res = await fetch(`http://localhost:3000/api/messages/${business}`);
       const allMessages = await res.json();
 
       const sessionMessages = allMessages
@@ -449,7 +478,7 @@ if (sessionId && business) {
 
   async function pollForNewMessages() {
     try {
-      const res = await fetch(`https://quickchatpro-backend-test1-1.onrender.com/api/messages/${business}`);
+      const res = await fetch(`http://localhost:3000/api/messages/${business}`);
       const allMessages = await res.json();
 
       const sessionMessages = allMessages
@@ -490,7 +519,7 @@ if (newMessages.length) {
       chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
-  await fetch('https://quickchatpro-backend-test1-1.onrender.com/api/chat', {
+  await fetch('http://localhost:3000/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, sessionId, business })
@@ -515,7 +544,7 @@ if (newMessages.length) {
 
     console.log('📤 Sending session close to server...');
     navigator.sendBeacon(
-      'https://quickchatpro-backend-test1-1.onrender.com/api/session/close',
+      'http://localhost:3000/api/session/close',
       new Blob(
         [JSON.stringify({ sessionId, business })],
         { type: 'application/json' }
