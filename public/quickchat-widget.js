@@ -32,6 +32,9 @@ body {
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: #f1f5f9;
 }
+a{
+color: white;
+}
 
 /* Widget Container */
 #quickchatpro-widget {
