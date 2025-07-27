@@ -307,7 +307,7 @@ const openIcon = document.getElementById("open");
 const exitIcon = document.getElementById("exit");
 
 const scriptTag = document.currentScript || document.querySelector('script[email]');
-const business = scriptTag?.getAttribute("business") || "dominic@gmail.com";
+const business = scriptTag?.getAttribute("business") || "dominicagu791@gmail.com";
 
 
 let userHasChatted = false;
