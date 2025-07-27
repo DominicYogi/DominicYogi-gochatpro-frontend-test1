@@ -277,7 +277,7 @@ body {
     <div id="chat-window" class="chat-container hidden">
       <div class="chat-header" id="chat-header">
         <div class="chat-title">Chipa Chat</div>
-        <div class="chat-status" href="https://chipachat.vercel.app/">powered by Chipa-chat</div>
+        <div class="chat-status"><a href="https://chipachat.vercel.app/">powered by Chipa-chat</a></div>
       </div>
 
       <div id="chat-messages" class="chat-box"></div>
