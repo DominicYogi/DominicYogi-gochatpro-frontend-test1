@@ -276,7 +276,7 @@ body {
 
     <div id="chat-window" class="chat-container hidden">
       <div class="chat-header" id="chat-header">
-        <div class="chat-title">GoChatPro</div>
+        <div class="chat-title">Chipa Chat</div>
         <div class="chat-status">We’re online</div>
       </div>
 
