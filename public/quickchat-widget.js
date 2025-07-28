@@ -336,7 +336,7 @@ let isSending = false;
     if (isLastTab) {
       const payload = JSON.stringify({ sessionId, business });
       navigator.sendBeacon(
-        "https://quickchatpro-backend-test1-2.onrender.com/session/close",
+        "https://bot-backend-live-1.onrender.com/session/close",
         new Blob([payload], { type: "application/json" })
       );
     }
@@ -352,7 +352,7 @@ let isSending = false;
 
   async function loadChatTitle() {
 
-  const res = await fetch(`https://quickchatpro-backend-test1-2.onrender.com/api/settings?business=${business}`);
+  const res = await fetch(`https://bot-backend-live-1.onrender.com/api/settings?business=${business}`);
   const data = await res.json();
 
   if (data.chatTitle) {
@@ -423,7 +423,7 @@ let sessionId = sessionStorage.getItem('sessionId');
     sessionId = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
     sessionStorage.setItem('sessionId', sessionId);
 
-    await fetch('https://quickchatpro-backend-test1-2.onrender.com/api/session/start', {
+    await fetch('https://bot-backend-live-1.onrender.com/api/session/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sessionId, business }),
@@ -441,7 +441,7 @@ function resetInactivityTimer() {
     if (sessionId && business) {
       console.log('🕒 No activity for 10 minutes. Auto-closing session.');
       navigator.sendBeacon(
-        "https://quickchatpro-backend-test1-2.onrender.com/api/session/close",
+        "https://bot-backend-live-1.onrender.com/api/session/close",
         new Blob(
           [JSON.stringify({ sessionId, business })],
           { type: 'application/json' }
@@ -462,7 +462,7 @@ resetInactivityTimer();
 
   async function loadMessages() {
     try {
-      const res = await fetch(`https://quickchatpro-backend-test1-2.onrender.com/api/messages/${business}`);
+      const res = await fetch(`https://bot-backend-live-1.onrender.com/api/messages/${business}`);
       const allMessages = await res.json();
 
       const sessionMessages = allMessages
@@ -481,7 +481,7 @@ resetInactivityTimer();
 
   async function pollForNewMessages() {
     try {
-      const res = await fetch(`https://quickchatpro-backend-test1-2.onrender.com/api/messages/${business}`);
+      const res = await fetch(`https://bot-backend-live-1.onrender.com/api/messages/${business}`);
       const allMessages = await res.json();
 
       const sessionMessages = allMessages
@@ -522,7 +522,7 @@ if (newMessages.length) {
       chatBox.scrollTop = chatBox.scrollHeight;
 
     try {
-  await fetch('https://quickchatpro-backend-test1-2.onrender.com/api/chat', {
+  await fetch('https://bot-backend-live-1.onrender.com/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, sessionId, business })
@@ -547,7 +547,7 @@ if (newMessages.length) {
 
     console.log('📤 Sending session close to server...');
     navigator.sendBeacon(
-      'https://quickchatpro-backend-test1-2.onrender.com/api/session/close',
+      'https://bot-backend-live-1.onrender.com/api/session/close',
       new Blob(
         [JSON.stringify({ sessionId, business })],
         { type: 'application/json' }
