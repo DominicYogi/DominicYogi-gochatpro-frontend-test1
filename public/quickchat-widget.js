@@ -78,7 +78,7 @@ color: white;
 /* Main Chat Window */
 #chat-window {
   width: 350px;
-  max-height: 90vh;
+  max-height: 70vh;
   background: white;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
