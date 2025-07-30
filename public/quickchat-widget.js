@@ -1,4 +1,10 @@
 (function () {
+  
+   // ========== Inject viewport meta ==========
+  const metaViewport = document.createElement("meta");
+  metaViewport.name = "viewport";
+  metaViewport.content = "width=device-width, initial-scale=1.0";
+  document.head.appendChild(metaViewport);
   // ========== Inject FontAwesome ==========
   const faScript = document.createElement("script");
   faScript.src = "https://kit.fontawesome.com/d31e8f0c6b.js";
@@ -263,6 +269,17 @@ color: white;
 .chat-msg.sending {
   opacity: 0.6;
   font-style: italic;
+}
+/* Mobile: Limit widget height to 70% of viewport */
+@media screen and (max-width: 768px) {
+  #chat-window {
+    width: 100%;
+    max-height: 70vh !important;
+    border-radius: 15px 15px 0 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
 }
 
   `;
