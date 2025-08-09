@@ -137,6 +137,7 @@ body {
   font-family: "Inter", sans-serif;
   padding: 18px 25px;
   border-radius: 15px;
+  text-align: right;
 }
 
 .bot {
