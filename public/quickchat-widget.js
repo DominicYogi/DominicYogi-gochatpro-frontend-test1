@@ -38,6 +38,11 @@ body {
   background: #f1f5f9;
 }
 
+a{
+  color: white;
+  font-weight: 300;
+}
+
 /* Widget Container */
 #quickchatpro-widget {
   position: fixed;
