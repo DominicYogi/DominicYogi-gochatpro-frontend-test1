@@ -1,5 +1,4 @@
 (function () {
-  
    // ========== Inject viewport meta ==========
   const metaViewport = document.createElement("meta");
   metaViewport.name = "viewport";
@@ -38,9 +37,6 @@ body {
   font-family: 'Inter', 'Segoe UI', sans-serif;
   background: #f1f5f9;
 }
-a{
-color: white;
-}
 
 /* Widget Container */
 #quickchatpro-widget {
@@ -78,7 +74,7 @@ color: white;
 /* Main Chat Window */
 #chat-window {
   width: 350px;
-  max-height: 70vh;
+  max-height: 60vh;
   background: white;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -107,7 +103,7 @@ color: white;
 }
 
 .chat-status {
-  font-size: 12px;
+  font-size: 10px;
   opacity: 0.8;
   margin-top: 4px;
 }
@@ -270,7 +266,7 @@ color: white;
   opacity: 0.6;
   font-style: italic;
 }
-/* Mobile: Limit widget height to 70% of viewport */
+  /* Mobile: Limit widget height to 70% of viewport */
 @media screen and (max-width: 768px) {
   #chat-window {
     width: 100%;
@@ -281,6 +277,7 @@ color: white;
     bottom: 0;
   }
 }
+
 
   `;
   document.head.appendChild(style);
@@ -297,7 +294,7 @@ color: white;
     <div id="chat-window" class="chat-container hidden">
       <div class="chat-header" id="chat-header">
         <div class="chat-title">Chipa Chat</div>
-        <div class="chat-status"><a href="https://chipachat.vercel.app/">powered by Chipa Technologies.</a></div>
+        <div class="chat-status"><a href="https://chipachat.vercel.app/">powered by Chipa-chat</a></div>
       </div>
 
       <div id="chat-messages" class="chat-box"></div>
@@ -572,5 +569,6 @@ if (newMessages.length) {
     );
   });
 })();
+
 
 })();
